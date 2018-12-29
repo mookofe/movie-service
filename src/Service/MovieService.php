@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace App\Service;
 
+use App\Entity\Movie;
 use App\Entity\MovieQuery;
 use App\Repository\MovieRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -48,6 +49,20 @@ class MovieService
         $criteria = $this->buildCriteriaFromQuery($query);
 
         return $this->repository->matching($criteria);
+    }
+
+    /**
+     * Save movie
+     *
+     * @param Movie $movie
+     * @return Movie
+     */
+    public function save(Movie $movie): Movie
+    {
+        $this->manager->persist($movie);
+        $this->manager->flush();
+
+        return $movie;
     }
 
     /**

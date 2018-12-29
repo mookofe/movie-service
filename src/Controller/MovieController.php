@@ -3,13 +3,16 @@ declare(strict_types = 1);
 
 namespace App\Controller;
 
+use App\Entity\Movie;
 use App\Entity\MovieQuery;
-use App\Service\MovieService;
 use FOS\RestBundle\View\View;
+use App\Service\MovieService;
+use App\View\MovieSummaryView;
 use App\View\MovieSummaryCollectionView;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * Class MovieController
@@ -36,8 +39,9 @@ class MovieController extends FOSRestController
     /**
      * Show list of movies
      *
-     * @param Request $request
      * @Rest\Get("/movies")
+     *
+     * @param Request $request
      * @return View
      */
     public function index(Request $request): View
@@ -52,6 +56,25 @@ class MovieController extends FOSRestController
         );
 
         return new View($movieSummaryCollection);
+    }
+
+    /**
+     * @Rest\Post("/movies")
+     *
+     * @ParamConverter("movieDTO", converter="fos_rest.request_body")
+     *
+     * @param MovieSummaryView $movieDTO
+     * @return View
+     */
+    public function store(MovieSummaryView $movieDTO): View
+    {
+        $movie = new Movie();
+        $this->mapToMovie($movieDTO, $movie);
+        $this->movieService->save($movie);
+
+        return new View(
+            new MovieSummaryView($movie)
+        );
     }
 
     /**
@@ -73,5 +96,20 @@ class MovieController extends FOSRestController
             $skip,
             $limit
         );
+    }
+
+    /**
+     * Map MovieDTO to Movie entity
+     *
+     * @param MovieSummaryView $movieDTO
+     * @param Movie $movie
+     */
+    private function mapToMovie(MovieSummaryView $movieDTO, Movie $movie): void
+    {
+        $movie->setTitle($movieDTO->getTitle());
+        $movie->setFormat($movieDTO->getFormat());
+        $movie->setLength($movieDTO->getLength());
+        $movie->setReleaseYear($movieDTO->getReleaseYear());
+        $movie->setRating($movieDTO->getRating());
     }
 }
