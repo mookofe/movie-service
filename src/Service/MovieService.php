@@ -66,6 +66,18 @@ class MovieService
     }
 
     /**
+     * Delete movie
+     *
+     * @param Movie $movie
+     */
+    public function delete(Movie $movie): void
+    {
+        $this->manager->remove($movie);
+
+        $this->manager->flush();
+    }
+
+    /**
      * Get count of total movies in the system
      *
      * @return int

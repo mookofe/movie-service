@@ -97,6 +97,19 @@ class MovieController extends FOSRestController
     }
 
     /**
+     * @Rest\Delete("/movies/{id}")
+     *
+     * @param Movie $movie
+     * @return View
+     */
+    public function delete(Movie $movie): View
+    {
+        $this->movieService->delete($movie);
+
+        return new View();
+    }
+
+    /**
      * Get movie query from request
      *
      * @param Request $request
