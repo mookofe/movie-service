@@ -59,6 +59,19 @@ class MovieController extends FOSRestController
     }
 
     /**
+     * @Rest\Get("/movies/{id}")
+     *
+     * @param Movie $movie
+     * @return View
+     */
+    public function show(Movie $movie): View
+    {
+        return new View(
+            new MovieSummaryView($movie)
+        );
+    }
+
+    /**
      * @Rest\Post("/movies")
      *
      * @ParamConverter("movieDTO", converter="fos_rest.request_body")
