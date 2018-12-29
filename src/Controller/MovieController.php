@@ -78,6 +78,25 @@ class MovieController extends FOSRestController
     }
 
     /**
+     * @Rest\Put("/movies/{id}")
+     *
+     * @ParamConverter("movieDTO", converter="fos_rest.request_body")
+     *
+     * @param MovieSummaryView $movieDTO
+     * @param Movie $movie
+     * @return View
+     */
+    public function update(MovieSummaryView $movieDTO, Movie $movie): View
+    {
+        $this->mapToMovie($movieDTO, $movie);
+        $this->movieService->save($movie);
+
+        return new View(
+            new MovieSummaryView($movie)
+        );
+    }
+
+    /**
      * Get movie query from request
      *
      * @param Request $request
