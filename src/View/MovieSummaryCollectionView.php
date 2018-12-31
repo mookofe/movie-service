@@ -33,7 +33,7 @@ final class MovieSummaryCollectionView
     public function __construct(Collection $movies, int $skipped, int $totalRows)
     {
         $this->transformCollection($movies);
-        $this->meta = new MetadataView($skipped, $totalRows);
+        $this->meta = new ResponseMetadataView($skipped, $totalRows);
     }
 
     /**

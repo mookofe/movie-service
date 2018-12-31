@@ -8,7 +8,7 @@ namespace App\View;
  *
  * @author Victor Cruz <cruzrosario@gmail.com>
  */
-final class MetadataView
+final class ResponseMetadataView
 {
     /**
      * @var int

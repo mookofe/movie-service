@@ -4,10 +4,12 @@ declare(strict_types = 1);
 namespace App\Controller;
 
 use App\Entity\Movie;
+use App\View\MovieView;
 use App\Entity\MovieQuery;
 use FOS\RestBundle\View\View;
 use App\Service\MovieService;
 use App\View\MovieSummaryView;
+use App\Service\MovieMetadataFetcher;
 use App\View\MovieSummaryCollectionView;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -27,13 +29,20 @@ class MovieController extends FOSRestController
     private $movieService;
 
     /**
+     * @var MovieMetadataFetcher
+     */
+    private $metadataService;
+
+    /**
      * MovieController constructor.
      *
-     * @param MovieService $movieService
+     * @param MovieService         $movieService
+     * @param MovieMetadataFetcher $metadataService
      */
-    public function __construct(MovieService $movieService)
+    public function __construct(MovieService $movieService, MovieMetadataFetcher $metadataService)
     {
-        $this->movieService = $movieService;
+        $this->movieService    = $movieService;
+        $this->metadataService = $metadataService;
     }
 
     /**
@@ -66,8 +75,10 @@ class MovieController extends FOSRestController
      */
     public function show(Movie $movie): View
     {
+        $movieMetadata = $this->metadataService->fetchByTitle($movie->getTitle());
+
         return new View(
-            new MovieSummaryView($movie)
+            new MovieView($movie, $movieMetadata)
         );
     }
 
