@@ -34,6 +34,13 @@ Setup environment variables:
 $ cp .env.dist .env
 ```
 
+Run database setup and initialization:
+
+```batch
+$ bin/console doctrine:database:create --if-not-exists
+$ bin/console doctrine:migrations:migrate
+```
+
 Run tests:
 
 ```batch
