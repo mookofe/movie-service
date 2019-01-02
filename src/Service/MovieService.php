@@ -9,6 +9,7 @@ use App\Repository\MovieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Collection;
+use App\Exception\MovieAlreadyExistException;
 
 /**
  * Service to handle Movie operations
@@ -59,6 +60,8 @@ class MovieService
      */
     public function save(Movie $movie): Movie
     {
+        $this->validateTitleIsUnique($movie);
+
         $this->manager->persist($movie);
         $this->manager->flush();
 
@@ -110,5 +113,29 @@ class MovieService
         $criteria->setMaxResults($query->getLimit());
 
         return $criteria;
+    }
+
+    /**
+     * Check if there's another movie with the same title and year
+     *
+     * @param Movie $movie
+     */
+    private function validateTitleIsUnique(Movie $movie)
+    {
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->eq('title', $movie->getTitle()))
+            ->andWhere(Criteria::expr()->eq('releaseYear', $movie->getReleaseYear()));
+
+        //Skip current one
+        if ($this->manager->contains($movie)){
+            $criteria->andWhere(Criteria::expr()->neq('id', $movie->getId()));
+        }
+
+        $foundMovie = $this->repository->matching($criteria)
+            ->first();
+
+        if ($foundMovie !== false){
+            throw new MovieAlreadyExistException($movie);
+        }
     }
 }
