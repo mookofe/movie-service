@@ -69,7 +69,7 @@ final class MovieQuery
      *
      * @return string
      */
-    public function getOrderBy(): string
+    public function getOrderBy(): ?string
     {
         return $this->orderBy;
     }
@@ -79,7 +79,7 @@ final class MovieQuery
      *
      * @return string
      */
-    public function getOrientation(): string
+    public function getOrientation(): ?string
     {
         return $this->orientation;
     }
