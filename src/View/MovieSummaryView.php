@@ -5,6 +5,7 @@ namespace App\View;
 
 use App\Entity\Movie;
 use JMS\Serializer\Annotation as Serializer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class MovieSummaryView
@@ -20,30 +21,60 @@ final class MovieSummaryView
 
     /**
      * @var string
+     *
+     * @Assert\NotNull
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *      min = 1,
+     *      max = 50)
+     *
      * @Serializer\Type("string")
      */
     private $title;
 
     /**
      * @var string
+     *
+     * @Assert\NotNull
+     * @Assert\NotBlank()
+     * @Assert\Choice({"VHS", "DVD", "Streaming"})
+     *
      * @Serializer\Type("string")
      */
     private $format;
 
     /**
      * @var int
+     *
+     * @Assert\NotNull
+     * @Assert\NotBlank()
+     * @Assert\GreaterThanOrEqual(0)
+     * @Assert\LessThanOrEqual(500)
+     *
      * @Serializer\Type("int")
      */
     private $length;
 
     /**
      * @var int
+     *
+     * @Assert\NotNull
+     * @Assert\NotBlank()
+     * @Assert\GreaterThanOrEqual(1800)
+     * @Assert\LessThanOrEqual(2100)
+     *
      * @Serializer\Type("int")
      */
     private $releaseYear;
 
     /**
      * @var int
+     *
+     * @Assert\NotNull
+     * @Assert\NotBlank()
+     * @Assert\GreaterThanOrEqual(1)
+     * @Assert\LessThanOrEqual(5)
+     *
      * @Serializer\Type("int")
      */
     private $rating;

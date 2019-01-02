@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use JMS\Serializer\Exception\ValidationFailedException;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
@@ -85,11 +87,16 @@ class MovieController extends FOSRestController
      *
      * @ParamConverter("movieDTO", converter="fos_rest.request_body")
      *
-     * @param MovieSummaryView $movieDTO
+     * @param MovieSummaryView                  $movieDTO
+     * @param ConstraintViolationListInterface  $validationErrors
      * @return View
      */
-    public function store(MovieSummaryView $movieDTO): View
+    public function store(MovieSummaryView $movieDTO, ConstraintViolationListInterface $validationErrors): View
     {
+        if ($validationErrors->count() > 0){
+            return View::create($validationErrors);
+        }
+
         $movie = new Movie();
         $this->mapToMovie($movieDTO, $movie);
         $this->movieService->save($movie);
@@ -102,12 +109,17 @@ class MovieController extends FOSRestController
      *
      * @ParamConverter("movieDTO", converter="fos_rest.request_body")
      *
-     * @param MovieSummaryView $movieDTO
-     * @param Movie $movie
+     * @param MovieSummaryView                 $movieDTO
+     * @param ConstraintViolationListInterface $validationErrors
+     * @param Movie                            $movie
      * @return View
      */
-    public function update(MovieSummaryView $movieDTO, Movie $movie): View
+    public function update(MovieSummaryView $movieDTO, ConstraintViolationListInterface $validationErrors, Movie $movie): View
     {
+        if ($validationErrors->count() > 0){
+            return View::create($validationErrors);
+        }
+
         $this->mapToMovie($movieDTO, $movie);
         $this->movieService->save($movie);
 
