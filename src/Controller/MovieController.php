@@ -11,7 +11,9 @@ use App\Service\MovieService;
 use App\View\MovieSummaryView;
 use App\Service\MovieMetadataFetcher;
 use App\View\MovieSummaryCollectionView;
+use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -169,7 +171,16 @@ class MovieController extends FOSRestController
      */
     private function buildMovieView(Movie $movie): View
     {
-        $movieMetadata = $this->metadataService->fetchByTitle($movie->getTitle());
+        $movieMetadata = null;
+
+        try {
+            $movieMetadata = $this->metadataService->fetchByTitle($movie->getTitle());
+        }
+        catch (ClientException $exception) {
+            if ($exception->getCode() !== Response::HTTP_NOT_FOUND){
+                throw $exception;
+            }
+        }
 
         return new View(
             new MovieView($movie, $movieMetadata)

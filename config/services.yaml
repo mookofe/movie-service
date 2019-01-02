@@ -29,3 +29,11 @@ services:
         arguments:
             $serializer:         '@jms_serializer'
             $metadataServiceUrl: '%env(METADATA_SERVICE_URL)%'
+
+    App\Listener\NotFoundHttpExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 200 }
+
+    App\Listener\HttpExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 100 }

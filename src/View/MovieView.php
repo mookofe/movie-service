@@ -31,7 +31,7 @@ class MovieView
      * @param Movie $movie
      * @param MovieMetadata $metadata
      */
-    public function __construct(Movie $movie, MovieMetadata $metadata)
+    public function __construct(Movie $movie, ?MovieMetadata $metadata)
     {
         $this->movie = $movie;
         $this->metadata = $metadata;
