@@ -75,11 +75,7 @@ class MovieController extends FOSRestController
      */
     public function show(Movie $movie): View
     {
-        $movieMetadata = $this->metadataService->fetchByTitle($movie->getTitle());
-
-        return new View(
-            new MovieView($movie, $movieMetadata)
-        );
+        return $this->buildMovieView($movie);
     }
 
     /**
@@ -96,9 +92,7 @@ class MovieController extends FOSRestController
         $this->mapToMovie($movieDTO, $movie);
         $this->movieService->save($movie);
 
-        return new View(
-            new MovieSummaryView($movie)
-        );
+        return $this->buildMovieView($movie);
     }
 
     /**
@@ -115,9 +109,7 @@ class MovieController extends FOSRestController
         $this->mapToMovie($movieDTO, $movie);
         $this->movieService->save($movie);
 
-        return new View(
-            new MovieSummaryView($movie)
-        );
+        return $this->buildMovieView($movie);
     }
 
     /**
@@ -167,5 +159,20 @@ class MovieController extends FOSRestController
         $movie->setLength($movieDTO->getLength());
         $movie->setReleaseYear($movieDTO->getReleaseYear());
         $movie->setRating($movieDTO->getRating());
+    }
+
+    /**
+     * Build movie view
+     *
+     * @param Movie $movie
+     * @return View
+     */
+    private function buildMovieView(Movie $movie): View
+    {
+        $movieMetadata = $this->metadataService->fetchByTitle($movie->getTitle());
+
+        return new View(
+            new MovieView($movie, $movieMetadata)
+        );
     }
 }

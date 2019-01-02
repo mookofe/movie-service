@@ -22,7 +22,7 @@ final class MovieMetadata
     /**
      * @var \DateTimeInterface
      *
-     * @Type("datetime")
+     * @Type("DateTime")
      */
     private $dateReleased;
 
